@@ -104,7 +104,7 @@ for i in range(len(input_sizes)):
 #print(average_times, xvals)
 yvals = []
 
-plt.plot(xvals, average_times, label="Destructive Selection Sort")
+plt.plot(xvals, average_times, label="Merge Sort")
 
 yvals = []
 
