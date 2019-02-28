@@ -4,7 +4,7 @@ import random
 from timeit import default_timer as timer
 
 # input sizes
-input_sizes = [5,10,20,50,100,500,1000]
+input_sizes = [ g for g in range(10000, 100000, 10000)]
 
 # definitions for our yvals and xvals 
 yvals = []
@@ -69,7 +69,7 @@ for size in input_sizes:
     # record the times taken for each input size
     times = []
     # perform 20 trials
-    for trial_number in range(20):
+    for trial_number in range(3):
         # construct a random set of input data
         my_list = []
         for i in range(size):
@@ -79,7 +79,7 @@ for size in input_sizes:
     
         # begin timer
         start = timer()
-
+        print(f"Testing {mergeSort}, with input size {size}")
         mergeSort(my_list)    #   executes the analysis on the function 
 
         # end timer

@@ -5,7 +5,7 @@ import re
 from timeit import default_timer as timer
 
 # input sizes
-input_sizes = [x for x in range(100000, 1000000, 10000)]
+input_sizes = [x for x in range(1000, 100000, 10000)]
 
 # definitions for our yvals and xvals 
 yvals = []
@@ -14,8 +14,13 @@ xvals = [i for i in input_sizes]
 # average_times will be stored for each input_size
 average_times = []
 
+def split_list(my_data):
+    half = len(my_data) // 2 # 2
+    return [my_data[:half], my_data[half:]] # 4
 
-def selectionSort(my_data):
+sorted_data = []
+
+def selection_Sort(my_data):
     # perform sort
     # find lowest value in list - continue while we still have values
     while len(my_data) > 0:
@@ -37,56 +42,38 @@ def selectionSort(my_data):
         return sorted_data
 
 
-# Our mergeSort function that takes in 'my_list' as the parrameter 
-def mergeSort(my_data):                               # T(n)
+def mergeSort(my_data):
+    # Exit condition
+    if len(my_data) == 1: # 1
+        return my_data # 1
 
-    # function variables
-    sorted_list = []                                    # 1
+    # halve array
+    a, b = split_list(my_data) # 6
+    # sort halves
+    a = mergeSort(a)[::-1] # log(n) + 1
+    b = mergeSort(b)[::-1] # log(n) + 1
 
-    # sorting stage
+    # empty array
+    my_data = [] # 1
+    while a or b: # while comparisons # n
+        # Empty B list
+        if a and not b: # 1
+            my_data.extend(a[::-1]) # 1
+            break
+        # Empty A list
+        elif b and not a: # 1
+            my_data.extend(b[::-1]) # 1
+            break
+        # A less then B
+        elif a[-1] <= b[-1]: # 1
+            my_data.append(a.pop()) # 1
+        # B less then A
+        else: # 1
+            my_data.append(b.pop()) # 1
+    """Merge sort effeciency: (1 + 1 + 6 + 2 + 2log(n))^(n+1+1+1+1+1+1) = 10 + 2log(n^n+6) = 10 + 2(n+6)log(n)"""
+    return my_data # 1
 
-    # terminating case (n = 1)
-    if len(my_data) == 1:
-        return my_data                                    # 1 i.e. T(1) == O(1)
-
-    # general case
-    else:
-        mid = int(len(my_data) / 2)                       # 1
-        lefthalf = my_data[:mid]                          # 1
-        righthalf = my_data[mid:]                         # 1
-
-        lefthalf = mergeSort(lefthalf)                    # T(n/2)
-        righthalf = mergeSort(righthalf)                  # T(n/2)
-
-        # merge stage
-        # occurs after both halves have been sorted
-        # running time is O(n) as determined by           # O(n)
-        # combined time of all while loops below
-
-        i=0
-        j=0
-
-        # comparing lowest values while each list has contents
-        while i < len(lefthalf) and j < len(righthalf):
-            if lefthalf[i] < righthalf[j]:
-                sorted_list.append(lefthalf[i])
-                i=i+1
-            else:
-                sorted_list.append(righthalf[j])
-                j=j+1
-
-        # process remaining values from both lists
-        while i < len(lefthalf):
-            sorted_list.append(lefthalf[i])
-            i=i+1
-
-        while j < len(righthalf):
-            sorted_list.append(righthalf[j])
-            j=j+1
-
-        return sorted_list
-
-li = [selectionSort, mergeSort]
+li = [mergeSort,selection_Sort]
 
 for func in li:
     func_name = re.search(r"<function (.*?) at (.*?)>", str(func)).group(1)
@@ -97,12 +84,11 @@ for func in li:
         # record the times taken for each input size
         times = []
         # perform 20 trials
-        for trial_number in range(100):
+        for trial_number in range(3):
             # construct a random set of input data
             my_data = []
             for i in range(size):
                 my_data.append(random.randint(-100,100))
-            sorted_data = [] # blank list to hold sorted values
             print(f"Testing {func_name}, with input size {len(my_data)}")
             # begin timer for selection sort 
             start = timer()
